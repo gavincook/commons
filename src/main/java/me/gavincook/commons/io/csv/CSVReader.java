@@ -36,13 +36,13 @@ public class CSVReader {
      *
      * @return 下一个csv行或<code>null</code>
      */
-    public CSVLine nextCSVLine() throws IOException {
+    public ReadableCSVLine nextCSVLine() throws IOException {
         String lineStr = this.reader.readLine();
         //空行或没有更多行
         if (Strings.isNullOrEmpty(lineStr)) {
             return null;
         }
-        return new CSVLine(lineStr);
+        return new ReadableCSVLine(lineStr);
     }
 
     /**

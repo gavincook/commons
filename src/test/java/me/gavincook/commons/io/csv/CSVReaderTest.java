@@ -22,10 +22,11 @@ public class CSVReaderTest {
         InputStream in = CSVReaderTest.class.getClassLoader().getResourceAsStream("test.csv");
         if (in != null) {
             CSVReader csvReader = new CSVReader(in, Charset.forName("GBK"));
-            CSVLine line;
+            ReadableCSVLine line;
             while ((line = csvReader.nextCSVLine()) != null) {
                 System.out.println(Arrays.toString(line.tokens()));
             }
+            csvReader.close();
         }
         Assert.assertTrue(true);
     }
