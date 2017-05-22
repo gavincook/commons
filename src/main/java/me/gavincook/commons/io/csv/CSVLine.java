@@ -18,7 +18,7 @@ public class CSVLine {
     private static final char COMMA = ',';
 
     /**
-     * 转移符
+     * 转义符
      */
     private static final char DOUBLE_QUOTE = '"';
 
@@ -48,7 +48,7 @@ public class CSVLine {
      * 返回下一个字符串，如果没有则返回<code>null</code>
      * 注意获取下一个字符串会引起当前索引的变化
      *
-     * @return
+     * @return 当前行中的下一列
      */
     public String nextToken() {
         int nextCommaIndex = findNextComma();
@@ -107,9 +107,9 @@ public class CSVLine {
     }
 
     /**
-     * 返回所有的字符串
+     * 返回所有的字符串数组
      *
-     * @return
+     * @return 当前行的字符串数组
      */
     public String[] tokens() {
         if (this.tokens != null) {
@@ -125,7 +125,7 @@ public class CSVLine {
     /**
      * 是否还有下一个元素
      *
-     * @return
+     * @return 有下一列是返回<code>true</code>，否则返回<code>false</code>
      */
     public boolean hasMore() {
         //(currentIndex == maxIndex + 1 && source.charAt(maxIndex) == ',')用于判断最后一列为空的时候的场景
@@ -143,7 +143,7 @@ public class CSVLine {
      * 查找下一个逗号分隔符的位置，若没有则返回-1
      * 注意查找分隔符不会引起当前索引的变化
      *
-     * @return
+     * @return 返回下一个逗号的索引，若没有下一个逗号，返回-1
      */
     private int findNextComma() {
         //当前是否在双引号中
