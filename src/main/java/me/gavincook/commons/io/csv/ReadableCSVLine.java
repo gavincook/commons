@@ -43,6 +43,9 @@ public class ReadableCSVLine implements CSVLine {
      */
     @Override
     public String nextToken() {
+        if (!hasMore()) {
+            return null;
+        }
         int nextCommaIndex = findNextComma();
         //下一个token开始的索引（包含）
         int tokenBeginIndex = -1,
@@ -59,7 +62,7 @@ public class ReadableCSVLine implements CSVLine {
             }
         }
         //最后一列，不为空
-        else if (currentIndex < maxIndex) {
+        else if (currentIndex <= maxIndex) {
             tokenBeginIndex = currentIndex;
             tokenEndIndex = maxIndex;
             currentIndex = maxIndex + 1;
@@ -122,12 +125,13 @@ public class ReadableCSVLine implements CSVLine {
     @Override
     public boolean hasMore() {
         //(currentIndex == maxIndex + 1 && source.charAt(maxIndex) == ',')用于判断最后一列为空的时候的场景
-        return currentIndex < maxIndex || (currentIndex == maxIndex + 1 && source.charAt(maxIndex) == ',');
+        return currentIndex <= maxIndex || (currentIndex == maxIndex + 1 && source.charAt(maxIndex) == ',');
     }
 
     /**
      * 重置
      */
+    @Override
     public void reset() {
         this.currentIndex = 0;
     }

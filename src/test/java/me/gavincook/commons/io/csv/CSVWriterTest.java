@@ -18,6 +18,11 @@ import java.nio.charset.Charset;
  */
 public class CSVWriterTest {
 
+    /**
+     * 测试写入一行数据， 包含逗号和引号
+     *
+     * @throws IOException
+     */
     @Test
     public void testWriteCSV() throws IOException {
         File file = new File(CSVWriterTest.class.getClassLoader().getResource("").getFile() + "/write-test.csv");

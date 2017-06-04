@@ -1,6 +1,7 @@
 package me.gavincook.commons.io.csv;
 
 /**
+ * csv行模型
  * @author GavinCook
  * @date 2017-05-23
  * @since 1.0.0
@@ -17,7 +18,26 @@ public interface CSVLine {
      */
     char DOUBLE_QUOTE = '"';
 
+    /**
+     * 是否还有下一个token
+     *
+     * @return
+     */
     boolean hasMore();
 
+    /**
+     * 返回下一个token
+     *
+     * @return
+     */
     String nextToken();
+
+    /**
+     * 重置csv行状态
+     * <ul>
+     * <li>对于读模式状态，{@link #reset()}后可以从头开始读取</li>
+     * <li>对于写模式状态，{@link #reset()}后会清空写入csv行中的数据，准备重新接收数据</li>
+     * </ul>
+     */
+    void reset();
 }

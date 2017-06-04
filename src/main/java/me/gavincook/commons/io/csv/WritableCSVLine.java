@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * csv 行模型
+ * csv 行写模型
  *
  * @author GavinCook
  * @date 2017-05-20
@@ -25,8 +25,6 @@ public class WritableCSVLine implements CSVLine {
 
     private StringBuffer formattedTokensStr = new StringBuffer();
 
-    public WritableCSVLine() {
-    }
 
     /**
      * 增加一个token
@@ -38,25 +36,6 @@ public class WritableCSVLine implements CSVLine {
             formattedTokensStr.append(COMMA);
         }
         formattedTokensStr.append(formatForPersistence(token.toString()));
-    }
-
-    /**
-     * 格式化token为可写的格式
-     *
-     * @param token
-     * @return
-     */
-    private String formatForPersistence(String token) {
-        //有双引号
-        if (token.indexOf("\"") != -1) {
-            token = token.replaceAll("\"", "\"\"");
-        }
-
-        //包含逗号
-        if (token.indexOf(Character.toString(COMMA)) != -1) {
-            token = DOUBLE_QUOTE + token + DOUBLE_QUOTE;
-        }
-        return token;
     }
 
     /**
@@ -84,11 +63,39 @@ public class WritableCSVLine implements CSVLine {
     /**
      * 重置
      */
+    @Override
     public void reset() {
         this.currentIndex = 0;
+        this.formattedTokensStr = new StringBuffer();
+        tokens.clear();
     }
 
+    /**
+     * 返回csv行对应的可写字符串
+     *
+     * @return
+     */
     public String getFormattedTokensStr() {
         return formattedTokensStr.toString();
+    }
+
+
+    /**
+     * 格式化token为可写的格式
+     *
+     * @param token
+     * @return
+     */
+    private String formatForPersistence(String token) {
+        //有双引号
+        if (token.indexOf("\"") != -1) {
+            token = token.replaceAll("\"", "\"\"");
+        }
+
+        //包含逗号
+        if (token.indexOf(Character.toString(COMMA)) != -1) {
+            token = DOUBLE_QUOTE + token + DOUBLE_QUOTE;
+        }
+        return token;
     }
 }

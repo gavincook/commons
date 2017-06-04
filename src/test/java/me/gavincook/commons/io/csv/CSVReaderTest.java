@@ -17,6 +17,11 @@ import java.util.Arrays;
  */
 public class CSVReaderTest {
 
+    /**
+     * 读取csv测试，将类型和列数打印出来
+     *
+     * @throws IOException
+     */
     @Test
     public void testReadCSV() throws IOException {
         InputStream in = CSVReaderTest.class.getClassLoader().getResourceAsStream("test.csv");
@@ -24,7 +29,8 @@ public class CSVReaderTest {
             CSVReader csvReader = new CSVReader(in, Charset.forName("GBK"));
             ReadableCSVLine line;
             while ((line = csvReader.nextCSVLine()) != null) {
-                System.out.println(Arrays.toString(line.tokens()));
+                String[] tokens = line.tokens();
+                System.out.println(Arrays.toString(tokens) + ", 长度为：" + tokens.length);
             }
             csvReader.close();
         }
