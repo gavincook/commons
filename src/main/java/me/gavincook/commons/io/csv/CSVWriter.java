@@ -29,14 +29,27 @@ public class CSVWriter {
         this.writer = new BufferedWriter(new OutputStreamWriter(stream, charset));
     }
 
+    /**
+     * 写入CSV行
+     * @param csvLine
+     * @throws IOException
+     */
     public void write(WritableCSVLine csvLine) throws IOException {
         this.writer.write(csvLine.getFormattedTokensStr());
     }
 
+    /**
+     * 刷新缓冲区
+     * @throws IOException
+     */
     public void flush() throws IOException {
         this.writer.flush();
     }
 
+    /**
+     * 关闭写入
+     * @throws IOException
+     */
     public void close() throws IOException {
         this.writer.close();
     }
