@@ -21,6 +21,19 @@
             <version>18.0</version>
         </dependency>
 
+        <!-- excel读写相关jar -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>3.16</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>3.16</version>
+        </dependency>
+        <!-- #excel读写相关jar -->
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
