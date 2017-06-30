@@ -17,8 +17,7 @@ import java.nio.charset.MalformedInputException;
 public class Files {
 
     /**
-     * 根据文件流判断文件内容编码
-     * 三种编码
+     * 根据文件流判断文件内容编码，注意这里的编码主要根据前100个字节来决定。不一定和原有编码一致，如GBK可能解析为GB2312。
      * @param stream 文件输入流
      * @param defaultCharset 当无法解析编码时，默认编码
      * @return
@@ -34,7 +33,7 @@ public class Files {
             /**
              * 通过前面的三个字节可以判断几个UTF8带bom的编码，分别为：{@link Charset#UTF8}, {@link Charset#UTF_16LE}, {@link Charset#UTF_16BE},
              */
-            if (length == 3) {
+            if (length >= 3) {
                 final int b1 = first3Bytes[0] & 0xFF;
                 final int b2 = first3Bytes[1] & 0xFF;
                 final int b3 = first3Bytes[2] & 0xFF;

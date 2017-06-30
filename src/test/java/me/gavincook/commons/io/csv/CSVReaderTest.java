@@ -1,12 +1,13 @@
 package me.gavincook.commons.io.csv;
 
-import org.junit.Assert;
-import org.junit.Test;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+
+import me.gavincook.commons.io.Files;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 /**
  * CSV工具类测试
@@ -25,8 +26,12 @@ public class CSVReaderTest {
     @Test
     public void testReadCSV() throws IOException {
         InputStream in = CSVReaderTest.class.getClassLoader().getResourceAsStream("test.csv");
+
+        InputStream checkCharset = CSVReaderTest.class.getClassLoader().getResourceAsStream("test.csv");
+
         if (in != null) {
-            CSVReader csvReader = new CSVReader(in, Charset.forName("GBK"));
+            CSVReader csvReader = new CSVReader(in,
+                Charset.forName(Files.getFileEncoding(checkCharset, me.gavincook.commons.io.Charset.UTF8).charsetName()));
             ReadableCSVLine line;
             while ((line = csvReader.nextCSVLine()) != null) {
                 String[] tokens = line.tokens();

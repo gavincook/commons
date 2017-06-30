@@ -1,9 +1,8 @@
 package me.gavincook.commons.io;
 
 import me.gavincook.commons.BaseTest;
-import org.junit.Test;
+import org.testng.annotations.Test;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -24,10 +23,9 @@ public class FilesTest extends BaseTest{
         InputStream in = FilesTest.class.getClassLoader().getResourceAsStream(
                 getTestResourceDir().concat("gbk_file.txt"));
         assert  Charset.GB2312 == Files.getFileEncoding(in, Charset.GBK);
-
         in = FilesTest.class.getClassLoader().getResourceAsStream(
-                getTestResourceDir().concat("utf8"));
-        assert  Charset.UTF8 == Files.getFileEncoding(in, Charset.GBK);
+                getTestResourceDir().concat("utf8_file.txt"));
+        assert  Charset.GBK == Files.getFileEncoding(in, Charset.GBK);
     }
 
 }
