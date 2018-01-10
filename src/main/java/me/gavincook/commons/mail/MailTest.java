@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.Properties;
 
 /**
+ * // todo will delete then.
  * @author Divers King
  * @date 2018-01-09
  * @since 1.0.0
@@ -26,7 +27,7 @@ public class MailTest {
     public static String myEmailSMTPHost = "smtp.163.com";
 
     // 收件人邮箱（替换为自己知道的有效邮箱）
-    public static String receiveMailAccount = "1027102799@qq.com";
+    public static String receiveMailAccount = "564543626@qq.com";
 
     public static void main(String[] args) throws Exception {
 
@@ -86,30 +87,28 @@ public class MailTest {
         MimeMessage message = new MimeMessage(session);
 
         // 2. From: 发件人（昵称有广告嫌疑，避免被邮件服务器误认为是滥发广告以至返回失败，请修改昵称）
-        message.setFrom(new InternetAddress(sendMail, "某宝网", "UTF-8"));
+        message.setFrom(new InternetAddress(sendMail));
 
         // 3. To: 收件人（可以增加多个收件人、抄送、密送）
-        message.setRecipient(MimeMessage.RecipientType.TO, new InternetAddress(receiveMail, "XX用户", "UTF-8"));
+        message.setRecipient(MimeMessage.RecipientType.TO, new InternetAddress(receiveMail));
+        // message.setRecipients(InternetAddress[]);
 
         // 4. Subject: 邮件主题（标题有广告嫌疑，避免被邮件服务器误认为是滥发广告以至返回失败，请修改标题）
-        message.setSubject("打折钜惠11", "UTF-8");
+        message.setSubject("三生树", "UTF-8");
 
         // 5. Content: 邮件正文（可以使用html标签）（内容有广告嫌疑，避免被邮件服务器误认为是滥发广告以至返回失败，请修改发送内容）
         //message.setContent("XX用户你好, 今天全场5折, 快来抢购, 错过今天再等一年。。。", "text/html;charset=UTF-8");
 
-
-
-
         // 6.1 附件
         MimeBodyPart attachment = new MimeBodyPart();
-        DataHandler dh2 = new DataHandler(new FileDataSource("j://aaa.txt"));  // 读取本地文件
+        DataHandler dh2 = new DataHandler(new FileDataSource("e:/fujian1.txt"));  // 读取本地文件
         attachment.setDataHandler(dh2);                                             // 将附件数据添加到“节点”
         attachment.setFileName(MimeUtility.encodeText(dh2.getName()));
 
         // 6.2 文字
         MimeBodyPart text = new MimeBodyPart();
         //    这里添加图片的方式是将整个图片包含到邮件内容中, 实际上也可以以 http 链接的形式添加网络图片
-        text.setContent("这是一张图片<br/><img src='cid:image_fairy_tail'/>", "text/html;charset=UTF-8");
+        text.setContent("又到了冬季最冷的时间，小寒已过，大寒将至，冰凉的早晨，闹钟无情的唤醒，骑单车走在风中，双手像是放进了冰水，刺凉", "text/html;charset=UTF-8");
 
         MimeMultipart mm = new MimeMultipart();
         mm.addBodyPart(attachment);
