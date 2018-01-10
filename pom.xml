@@ -15,6 +15,7 @@
         <guava.version>18.0</guava.version>
         <apache.poi.version>3.16</apache.poi.version>
         <gm4java.version>1.1.1</gm4java.version>
+        <javax.mail.version>1.6.0</javax.mail.version>
     </properties>
 
     <dependencies>
@@ -43,6 +44,13 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.7.25</version>
+        </dependency>
+
+        <!-- mail jar -->
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>${javax.mail.version}</version>
         </dependency>
 
         <dependency>
