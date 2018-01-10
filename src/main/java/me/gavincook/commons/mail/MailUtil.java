@@ -8,6 +8,7 @@ import javax.activation.FileDataSource;
 import javax.mail.*;
 import javax.mail.internet.*;
 import java.io.UnsupportedEncodingException;
+import java.security.Security;
 import java.util.Date;
 import java.util.Properties;
 
@@ -30,6 +31,16 @@ public class MailUtil {
     public static boolean send(final MailInfo mailInfo) {
         boolean result = true;
         Properties props = new Properties();
+
+        if (mailInfo.isNeedSSL()) {
+            Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
+            final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
+            props.setProperty("mail.smtp.socketFactory.class", SSL_FACTORY);
+            props.setProperty("mail.smtp.socketFactory.fallback", "false");
+            props.setProperty("mail.smtp.port", "465");
+            props.setProperty("mail.smtp.socketFactory.port", "465");
+        }
+
         props.setProperty("mail.transport.protocol", "smtp");
         props.setProperty("mail.smtp.host", mailInfo.getHost());
         props.setProperty("mail.smtp.auth", "true");
@@ -66,7 +77,7 @@ public class MailUtil {
         MimeMessage msg = new MimeMessage(session);
         try {
             // set the sender of mail
-            msg.setFrom(new InternetAddress(mailInfo.getFromMail(), "大爷", "UTF-8"));
+            msg.setFrom(new InternetAddress(mailInfo.getFromMail(), "USER_AA", "UTF-8"));
 
             String[] toMails = mailInfo.getToMails();
             InternetAddress[] address = new InternetAddress[toMails.length];
@@ -76,7 +87,7 @@ public class MailUtil {
             msg.setRecipients(MimeMessage.RecipientType.TO, address);
 
             //抄送自己
-            msg.setRecipients(MimeMessage.RecipientType.CC, mailInfo.getFromMail());
+            //msg.setRecipients(MimeMessage.RecipientType.CC, mailInfo.getFromMail());
 
             // subject
             msg.setSubject(mailInfo.getSubject(), "UTF-8");

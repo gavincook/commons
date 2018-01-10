@@ -53,6 +53,11 @@ public class MailInfoBuilder {
         return this;
     }
 
+    public MailInfoBuilder needSSL(boolean needSSL) {
+        mailInfo.setNeedSSL(needSSL);
+        return this;
+    }
+
     public MailInfo build(){
         return mailInfo;
     }

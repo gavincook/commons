@@ -30,6 +30,9 @@ public class MailInfo {
     //内容
     private String content;
 
+    //是否ssl方式
+    private boolean needSSL = true;
+
     //附件-多个
     private String[] filePaths;
 
@@ -95,5 +98,13 @@ public class MailInfo {
 
     public void setCcMails(String[] ccMails) {
         this.ccMails = ccMails;
+    }
+
+    public boolean isNeedSSL() {
+        return needSSL;
+    }
+
+    public void setNeedSSL(boolean needSSL) {
+        this.needSSL = needSSL;
     }
 }
