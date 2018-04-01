@@ -87,15 +87,16 @@ public class WritableCSVLine implements CSVLine {
      * @return
      */
     private String formatForPersistence(String token) {
+        String formattedToken = token;
         //有双引号
-        if (token.indexOf("\"") != -1) {
-            token = token.replaceAll("\"", "\"\"");
+        if (formattedToken.indexOf("\"") != -1) {
+            formattedToken = formattedToken.replaceAll("\"", "\"\"");
         }
 
         //包含逗号
-        if (token.indexOf(Character.toString(COMMA)) != -1) {
-            token = DOUBLE_QUOTE + token + DOUBLE_QUOTE;
+        if (formattedToken.indexOf(Character.toString(COMMA)) != -1) {
+            formattedToken = DOUBLE_QUOTE + formattedToken + DOUBLE_QUOTE;
         }
-        return token;
+        return formattedToken;
     }
 }

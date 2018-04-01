@@ -48,12 +48,12 @@ public class CSVReader {
     /**
      * 关闭csv资源
      */
-    public void close() {
+    public void close() throws IOException {
         if (this.reader != null) {
             try {
                 this.reader.close();
             } catch (IOException e) {
-                throw new RuntimeException("close csv reader exception", e);
+                throw new IOException("close csv reader exception", e);
             }
         }
     }

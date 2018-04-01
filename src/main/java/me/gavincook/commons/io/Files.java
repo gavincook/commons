@@ -2,11 +2,9 @@ package me.gavincook.commons.io;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.CharsetDecoder;
-import java.nio.charset.MalformedInputException;
 
 /**
  * 文件工具类
@@ -23,7 +21,7 @@ public class Files {
      * @return
      */
     public static Charset getFileEncoding(InputStream stream, Charset defaultCharset) throws IOException {
-        if(stream == null){
+        if (stream == null) {
             throw new IllegalArgumentException("stream argument can't be null for getFileEncoding");
         }
         try {
@@ -54,6 +52,8 @@ public class Files {
                             return Charset.UTF_16BE;
                         }
                         break;
+                    default:
+                        //do nothing
                 }
             }
 
@@ -61,8 +61,8 @@ public class Files {
              * 如果不匹配，那么依次遍历{@link Charset}中的所有编码，依次判断。
              * 注意编码越在前，优先级越高
              */
-            for(Charset charset : Charset.values()){
-                if(matchCharset(first3Bytes, charset.charsetName())){
+            for (Charset charset : Charset.values()) {
+                if (matchCharset(first3Bytes, charset.charsetName())) {
                     return charset;
                 }
             }
@@ -71,7 +71,7 @@ public class Files {
              * 如果遍历{@link Charset}中的所有编码还未找到匹配的，则返回默认编码
              */
             return defaultCharset;
-        }finally {
+        } finally {
             stream.close();
         }
     }
@@ -82,8 +82,8 @@ public class Files {
      * @param charsetName 指定编码
      * @return 匹配则返回<code>true</code>， 否则返回<code>false</code>
      */
-    public static boolean matchCharset(byte[] data, String charsetName)  {
-        if(data == null){
+    public static boolean matchCharset(byte[] data, String charsetName) {
+        if (data == null) {
             throw new IllegalArgumentException("data argument can't be null for matchCharset");
         }
         CharsetDecoder charsetDecoder = java.nio.charset.Charset.forName(charsetName).newDecoder();
