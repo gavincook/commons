@@ -9,31 +9,49 @@ package me.gavincook.commons.mail;
  **/
 public class MailInfo {
 
-    // 发送方的host地址，如： smtp.163.com
+    /**
+     * 发送方的host地址，如： smtp.163.com
+     */
     private String host;
 
-    // 发送方邮件账号
+    /**
+     * 发送方邮件账号
+     */
     private String fromMail;
 
-    // 三方密码
+    /**
+     * 三方密码
+     */
     private String fromPassword;
 
-    // 接收方-多个
+    /**
+     *  接收方
+     */
     private String[] toMails;
 
-    //抄送方-多个
+    /**
+     * 抄送方
+     */
     private String[] ccMails;
 
-    //主题
+    /**
+     * 主题
+     */
     private String subject;
 
-    //内容
+    /**
+     * 邮件内容
+     */
     private String content;
 
-    //是否ssl方式
+    /**
+     * 是否使用ssl方式
+     */
     private boolean needSSL = true;
 
-    //附件-多个
+    /**
+     * 附件
+     */
     private String[] filePaths;
 
     public String getHost() {
