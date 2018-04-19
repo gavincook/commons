@@ -1,5 +1,6 @@
 package me.gavincook.commons.util.secret;
 
+import me.gavincook.commons.util.ByteUtils;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
@@ -86,109 +87,151 @@ public class AESUtils {
         for (int i = 0; i < bytes.length; i++) {
             int source = (bytes[i] & 0xFF);
             String strHex=Integer.toHexString(source);
-            if(strHex.length() < 2){
-                sb.append(strHex);
-            } else {
-                sb.append(strHex.charAt(0));
-            }
+            sb.append(strHex.charAt(0));
         }
         return  sb.toString();
     }
 
     /**
-     * 加密
+     * AES加密
      *
-     * @param src 需要加密的内容
+     * @param content 需要加密的内容
      * @param key 加密秘钥
      * @return
      */
-    public static String encrypt(String src, String key) {
-        return encrypt(src, key, CHARCODE);
+    public static String encrypt(String content, String key) throws Exception {
+        return encryptThenBase64(content, key, CHARCODE);
     }
 
     /**
-     * 解密
+     * AES解密
      *
-     * @param src 密文
+     * @param content 密文
      * @param key 密钥
      * @return
      */
-    public static String decrypt(String src, String key) {
-        return decrypt(src, key, CHARCODE);
+    public static String decrypt(String content, String key) throws Exception {
+        return decryptAfterBase64Decode(content, key, CHARCODE);
     }
 
     /**
-     * 加密
+     * 对输入的字符串进行AES加密, 然后再做Base64转码,防止中文乱码
      *
-     * @param src 需要加密的内容
+     * @param content 需要加密的内容
      * @param key 加密秘钥
      * @param charset 编码
      * @return
      */
-    public static String encrypt(String src, String key, String charset) {
-        if (key == null) {
-            return null;
+    public static String encryptThenBase64(String content, String key, String charset) throws Exception {
+        byte[] contentBytes = content.getBytes(charset);
+        byte[] tBytes = encryptTBytes(contentBytes, key);
+        String secret = new BASE64Encoder().encode(tBytes);
+        return secret.replaceAll("\r|\n", "");
+    }
+
+    /**
+     * 对输入的字符串进行AES加密, 然后再转为十六进制字符串
+     *
+     * @param content 需要加密的内容
+     * @param key 加密秘钥
+     * @param charset 编码
+     * @return
+     */
+    public static String encryptThenHex(String content, String key, String charset) throws Exception {
+        byte[] contentBytes = content.getBytes(charset);
+        byte[] tBytes = encryptTBytes(contentBytes, key);
+        String secret = ByteUtils.byteToHex(tBytes);
+        return secret.replaceAll("\r|\n", "");
+    }
+
+    /**
+     * 对输入的字节数据进行AES加密
+     *
+     * @param content 需要加密的内容
+     * @param key 加密秘钥
+     * @return
+     */
+    public static byte[] encryptTBytes(byte[] content,String key) throws Exception {
+        if (key == null || content == null || content.length == 0) {
+            throw new IllegalArgumentException();
         }
         judgeKeyLen(key.length());
-        String afterCode;
-        try {
-            byte[] raw = key.getBytes();
-            Cipher cipher = Cipher.getInstance(ALGORITHM);
-            SecretKeySpec skeySpec = new SecretKeySpec(raw, AES);
-            IvParameterSpec iv = new IvParameterSpec(MODEL.getBytes());
-            cipher.init(Cipher.ENCRYPT_MODE, skeySpec, iv);
-            byte[] encrypted = cipher.doFinal(src.getBytes(charset));
-            //此处使用BASE64做转码功能，防止中文乱码
-            afterCode = new BASE64Encoder().encode(encrypted);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
-        return afterCode.replaceAll("\r|\n", "");
+        byte[] raw = key.getBytes();
+        Cipher cipher = Cipher.getInstance(ALGORITHM);
+        SecretKeySpec skeySpec = new SecretKeySpec(raw, AES);
+        IvParameterSpec iv = new IvParameterSpec(MODEL.getBytes());
+        cipher.init(Cipher.ENCRYPT_MODE, skeySpec, iv);
+        byte[] encrypted = cipher.doFinal(content);
+        return encrypted;
+    }
+
+    /**
+     * 先base64解密, 然后再AES解密
+     *
+     * @param content 密文
+     * @param key 密钥
+     * @return
+     */
+    public static String decryptAfterBase64Decode(String content, String key, String charset) throws Exception {
+        byte[] decodeBuffer = new BASE64Decoder().decodeBuffer(content);
+        byte[] decryptTBytes = decryptTBytes(decodeBuffer, key);
+        String originalString = new String(decryptTBytes, charset);
+        return originalString;
+    }
+
+    /**
+     * 先做hex字节码还原, 然后再AES解密
+     *
+     * @param content 密文
+     * @param key 密钥
+     * @return
+     */
+    public static String decryptAfterHexDecode(String content, String key, String charset) throws Exception {
+        byte[] decodeBuffer = ByteUtils.hexTBytes(content);
+        byte[] decryptTBytes = decryptTBytes(decodeBuffer, key);
+        String originalString = new String(decryptTBytes, charset);
+        return originalString;
     }
 
     /**
      * 解密
      *
-     * @param src 密文
+     * @param content 密文
      * @param key 密钥
      * @return
      */
-    public static String decrypt(String src, String key, String charset) {
-        // 判断Key密钥是否正确
-        if (key == null) {
-            return null;
+    public static byte[] decryptTBytes(byte[] content, String key) throws Exception {
+        if (key == null || content == null || content.length == 0) {
+            throw new IllegalArgumentException();
         }
         judgeKeyLen(key.length());
-        String originalString;
-        try {
-            byte[] raw = key.getBytes(CHARCODE);
-            SecretKeySpec skeySpec = new SecretKeySpec(raw, AES);
-            Cipher cipher = Cipher.getInstance(ALGORITHM);
-            IvParameterSpec iv = new IvParameterSpec(MODEL.getBytes());
-            cipher.init(Cipher.DECRYPT_MODE, skeySpec, iv);
-            //先用base64解密
-            byte[] encrypted1 = new BASE64Decoder().decodeBuffer(src);
-            byte[] original = cipher.doFinal(encrypted1);
-            originalString = new String(original, charset);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
-        return originalString;
+        byte[] raw = key.getBytes(CHARCODE);
+        SecretKeySpec skeySpec = new SecretKeySpec(raw, AES);
+        Cipher cipher = Cipher.getInstance(ALGORITHM);
+        IvParameterSpec iv = new IvParameterSpec(MODEL.getBytes());
+        cipher.init(Cipher.DECRYPT_MODE, skeySpec, iv);
+        byte[] original = cipher.doFinal(content);
+        return original;
     }
 
     /**
      * test
      * @param args
      */
-    public static void main(String[] args) {
-        String data = "走遍世界的心不能停...O(∩_∩)O哈哈~";
-        String key ,secret;
+    public static void main(String[] args) throws Exception {
+        String data = "走遍世界的心不能停...O(∩_∩)O哈哈~", key, secret, origin;
         key = AESUtils.generateAESKey(128);
         System.out.println("key length 128: " + key);
+        System.out.println("============== 默认AES加解密前后使用Base64加解码 ==============");
         secret = AESUtils.encrypt(data, key);
         System.out.println(String.format("encrypt data: %s, result: %s", data, secret));
-        String dData = AESUtils.decrypt(secret, key);
-        System.out.println("decrypt result: " + dData);
+        origin = AESUtils.decrypt(secret, key);
+        System.out.println("decrypt result: " + origin);
+        System.out.println("============== 指定AES加解密前后使用Hex加解码 ==============");
+        secret = AESUtils.encryptThenHex(data, key, "UTF-8");
+        System.out.println(String.format("encrypt data: %s, result: %s", data, secret));
+        origin = AESUtils.decryptAfterHexDecode(secret, key, "UTF-8");
+        System.out.println("decrypt result: " + origin);
 
     }
 }

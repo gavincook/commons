@@ -8,7 +8,6 @@ import java.util.Iterator;
 
 /**
  * 字符串相关操作方法工具类
- * @author Hinsteny
  * @author gavincook
  * @date 2017-11-20
  */
@@ -129,6 +128,15 @@ public class StringUtils {
             }
         }
         return true;
+    }
+
+    /**
+     * 判断字符串不为空
+     * @param str
+     * @return
+     */
+    public static boolean isNotBlank(String str) {
+        return !isBlank(str);
     }
 
     /**

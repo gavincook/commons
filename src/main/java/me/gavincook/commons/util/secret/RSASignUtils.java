@@ -178,15 +178,11 @@ public class RSASignUtils {
      * @param charset get byte encoding
      * @return content bytes
      */
-    private static byte[] getContentBytes(String content, String charset) {
+    private static byte[] getContentBytes(String content, String charset) throws UnsupportedEncodingException {
         if (null == charset || "".equals(charset.trim())) {
             return content.getBytes();
         }
-        try {
-            return content.getBytes(charset);
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException("sign encoding is not support:" + charset);
-        }
+        return content.getBytes(charset);
     }
 
     /**

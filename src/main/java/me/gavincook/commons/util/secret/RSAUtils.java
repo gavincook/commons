@@ -106,7 +106,7 @@ public class RSAUtils {
     }
 
     public static String decryptData(String key, String data, String charset, boolean usePubKey) throws Exception {
-        byte[] dataBytes = ByteUtils.hexToyte(data.getBytes(charset));
+        byte[] dataBytes = ByteUtils.hexTBytes(data.getBytes(charset));
         byte[] encryptData = decryptData(key, dataBytes, usePubKey);
         return new String(encryptData, charset);
     }
@@ -165,8 +165,8 @@ public class RSAUtils {
 
     public static void main(String[] args) throws Exception {
         KeyPair keyPair = generateKeyPair();
-        String publicKey = RSASignUtils.getPublicKey(keyPair);
-        String privateKey = RSASignUtils.getPrivateKey(keyPair);
+        String publicKey = RSAUtils.getPublicKey(keyPair);
+        String privateKey = RSAUtils.getPrivateKey(keyPair);
         System.out.println("Public key: " + publicKey);
         System.out.println("Private key: " + privateKey);
         String data = "走遍世界的心不能停...O(∩_∩)O哈哈~", secret, origin;
