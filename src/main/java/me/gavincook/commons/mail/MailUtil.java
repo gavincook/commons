@@ -1,5 +1,6 @@
 package me.gavincook.commons.mail;
 
+import me.gavincook.commons.io.Charset;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,8 +77,8 @@ public class MailUtil {
     private static MimeMessage createMimeMessage(Session session, MailInfo mailInfo){
         MimeMessage msg = new MimeMessage(session);
         try {
-            // set the sender of mail
-            msg.setFrom(new InternetAddress(mailInfo.getFromMail(), "USER_AA", "UTF-8"));
+            //设置发送方
+            msg.setFrom(new InternetAddress(mailInfo.getFromMail(), "USER_AA", Charset.UTF8.charsetName()));
 
             String[] toMails = mailInfo.getToMails();
             InternetAddress[] address = new InternetAddress[toMails.length];
@@ -86,22 +87,19 @@ public class MailUtil {
             }
             msg.setRecipients(MimeMessage.RecipientType.TO, address);
 
-            //抄送自己
-            //msg.setRecipients(MimeMessage.RecipientType.CC, mailInfo.getFromMail());
+            //主题
+            msg.setSubject(mailInfo.getSubject(), Charset.UTF8.charsetName());
 
-            // subject
-            msg.setSubject(mailInfo.getSubject(), "UTF-8");
-
-            // main part
+            //邮件主体
             MimeMultipart mainPart = new MimeMultipart();
             mainPart.setSubType("mixed");
 
-            // content
+            //邮件内容节点
             MimeBodyPart text = new MimeBodyPart();
             text.setContent(mailInfo.getContent(), "text/html;charset=UTF-8");
             mainPart.addBodyPart(text);
 
-            // add files
+            //添加附件
             mainPart = addAttachments(mainPart, mailInfo.getFilePaths());
 
             msg.setContent(mainPart);
@@ -121,8 +119,6 @@ public class MailUtil {
      * @param filePaths 附件地址
      */
     private static MimeMultipart addAttachments(MimeMultipart mainPart, String[] filePaths) {
-
-        // file
         MimeBodyPart attachment;
         DataHandler dh2;
         for (String filePath : filePaths) {
@@ -130,7 +126,7 @@ public class MailUtil {
             // 添加文件
             dh2 = new DataHandler(new FileDataSource(filePath));
 
-            // 将附件数据添加到“节点”, 再添加到邮件主体
+            // 将附件数据添加到“节点”, 再把节点添加到邮件主体
             try {
                 attachment.setDataHandler(dh2);
                 attachment.setFileName(MimeUtility.encodeText(dh2.getName()));

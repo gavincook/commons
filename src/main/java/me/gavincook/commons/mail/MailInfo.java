@@ -52,7 +52,7 @@ public class MailInfo {
     /**
      * 附件
      */
-    private String[] filePaths;
+    private String[] filePaths = new String[]{};
 
     public String getHost() {
         return host;
