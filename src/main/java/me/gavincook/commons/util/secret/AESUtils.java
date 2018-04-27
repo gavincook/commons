@@ -1,8 +1,6 @@
 package me.gavincook.commons.util.secret;
 
 import me.gavincook.commons.util.ByteUtils;
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -10,6 +8,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 
 /**
  * AES加解密算法
@@ -125,7 +124,7 @@ public class AESUtils {
     public static String encryptThenBase64(String content, String key, String charset) throws Exception {
         byte[] contentBytes = content.getBytes(charset);
         byte[] tBytes = encryptTBytes(contentBytes, key);
-        String secret = new BASE64Encoder().encode(tBytes);
+        String secret = Base64Utils.base64Encodes(tBytes);
         return secret.replaceAll("\r|\n", "");
     }
 
@@ -173,7 +172,7 @@ public class AESUtils {
      * @return
      */
     public static String decryptAfterBase64Decode(String content, String key, String charset) throws Exception {
-        byte[] decodeBuffer = new BASE64Decoder().decodeBuffer(content);
+        byte[] decodeBuffer = Base64.getDecoder().decode(content);
         byte[] decryptTBytes = decryptTBytes(decodeBuffer, key);
         String originalString = new String(decryptTBytes, charset);
         return originalString;

@@ -1,11 +1,7 @@
 package me.gavincook.commons.util.secret;
 
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
-
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -206,7 +202,7 @@ public class DESUtils {
         cipher.init(Cipher.ENCRYPT_MODE, skeySpec, iv);
         byte[] encrypted = cipher.doFinal(src.getBytes(charset));
         //此处使用BASE64做转码功能，防止中文乱码
-        afterCode = new BASE64Encoder().encode(encrypted);
+        afterCode = Base64Utils.base64Encodes(encrypted);
         return afterCode.replaceAll("\r|\n", "");
     }
 
@@ -225,8 +221,8 @@ public class DESUtils {
         IvParameterSpec iv = new IvParameterSpec(MODEL.getBytes());
         cipher.init(Cipher.DECRYPT_MODE, skeySpec, iv);
         //先用base64解密
-        byte[] encrypted1 = new BASE64Decoder().decodeBuffer(src);
-        byte[] original = cipher.doFinal(encrypted1);
+        byte[] secret = Base64Utils.base64Decode(src.getBytes(charset));
+        byte[] original = cipher.doFinal(secret);
         originalString = new String(original, charset);
         return originalString;
     }
