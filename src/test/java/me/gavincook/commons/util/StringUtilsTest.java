@@ -1,14 +1,14 @@
 package me.gavincook.commons.util;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import static me.gavincook.commons.util.StringUtils.replaceSensInfo;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static me.gavincook.commons.util.StringUtils.replaceSensInfo;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 /**
  * @author Hinsteny
@@ -76,13 +76,15 @@ public class StringUtilsTest {
         Assert.assertNull(StringUtils.leftPad(null, 5, padChar));
         Assert.assertEquals(StringUtils.leftPad("abc", 3, padChar), "abc");
         Assert.assertEquals(StringUtils.leftPad("abc", 2, padChar), "abc");
-        Assert.assertEquals(StringUtils.leftPad("abc", 5, padChar), String.valueOf(padChar) + String.valueOf(padChar) + "abc");
+        Assert.assertEquals(StringUtils.leftPad("abc", 5, padChar),
+            String.valueOf(padChar) + String.valueOf(padChar) + "abc");
 
         padChar = '#';
         Assert.assertNull(StringUtils.leftPad(null, 5, padChar));
         Assert.assertEquals(StringUtils.leftPad("abc", 3, padChar), "abc");
         Assert.assertEquals(StringUtils.leftPad("abc", 2, padChar), "abc");
-        Assert.assertEquals(StringUtils.leftPad("abc", 5, padChar), String.valueOf(padChar) + String.valueOf(padChar) + "abc");
+        Assert.assertEquals(StringUtils.leftPad("abc", 5, padChar),
+            String.valueOf(padChar) + String.valueOf(padChar) + "abc");
     }
 
     @Test
@@ -99,13 +101,15 @@ public class StringUtilsTest {
         Assert.assertNull(StringUtils.rightPad(null, 5, padChar));
         Assert.assertEquals(StringUtils.rightPad("abc", 3, padChar), "abc");
         Assert.assertEquals(StringUtils.rightPad("abc", 2, padChar), "abc");
-        Assert.assertEquals(StringUtils.rightPad("abc", 5, padChar), "abc" + String.valueOf(padChar) + String.valueOf(padChar));
+        Assert.assertEquals(StringUtils.rightPad("abc", 5, padChar),
+            "abc" + String.valueOf(padChar) + String.valueOf(padChar));
 
         padChar = '#';
         Assert.assertNull(StringUtils.rightPad(null, 5, padChar));
         Assert.assertEquals(StringUtils.rightPad("abc", 3, padChar), "abc");
         Assert.assertEquals(StringUtils.rightPad("abc", 2, padChar), "abc");
-        Assert.assertEquals(StringUtils.rightPad("abc", 5, padChar), "abc" + String.valueOf(padChar) + String.valueOf(padChar));
+        Assert.assertEquals(StringUtils.rightPad("abc", 5, padChar),
+            "abc" + String.valueOf(padChar) + String.valueOf(padChar));
     }
 
     @Test
@@ -144,10 +148,17 @@ public class StringUtilsTest {
 
     @Test
     public void testJoinArray() {
-        Object[] array = new Object[]{1, "2", 3.0D, 4L, 5.0F, true, false};
+        Object[] array = new Object[] { 1, "2", 3.0D, 4L, 5.0F, true, false };
         Assert.assertEquals(StringUtils.join(array, ","), "1,2,3.0,4,5.0,true,false");
         Assert.assertEquals(StringUtils.join(array, ""), "123.045.0truefalse");
         Assert.assertEquals(StringUtils.join(array, null), "123.045.0truefalse");
         Assert.assertNull(StringUtils.join((Collection<? extends Object>) null, null));
     }
+
+    @Test
+    public void testGetLongestCommonPrefix() throws Exception {
+        String[] strings = { "This is", "That is", "Thought" };
+        Assert.assertEquals(StringUtils.getLongestCommonPrefix(strings), "Th");
+    }
+
 }

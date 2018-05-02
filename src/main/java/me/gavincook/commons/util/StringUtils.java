@@ -1,10 +1,10 @@
 package me.gavincook.commons.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.Collection;
 import java.util.Iterator;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 字符串相关操作方法工具类
@@ -13,11 +13,11 @@ import java.util.Iterator;
  */
 public class StringUtils {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(StringUtils.class);
+    private static final Logger    LOGGER       = LoggerFactory.getLogger(StringUtils.class);
 
-    public static final String EMPTY      = "";
+    public static final String     EMPTY        = "";
 
-    public static final char   SPACE_CHAR = ' ';
+    public static final char       SPACE_CHAR   = ' ';
 
     /**
      * 敏感信息脱敏默认替换字符
@@ -347,13 +347,40 @@ public class StringUtils {
         StringBuilder sb = new StringBuilder();
         //标识是否是拼接第一个元素
         boolean isFirst = true;
-        for(T t :array){
-            if(!isFirst){
+        for (T t : array) {
+            if (!isFirst) {
                 sb.append(delimiter);
             }
             sb.append(t);
             isFirst = false;
         }
         return sb.toString();
+    }
+
+    /**
+     * 获取多个字符串最长的公共字符串前缀
+     * @param strings
+     * @return
+     */
+    public static String getLongestCommonPrefix(String[] strings) {
+        if (strings == null || strings.length == 0) {
+            return null;
+        }
+        if (strings.length == 1) {
+            return strings[0];
+        }
+
+        int currentCharIndex = 0;
+        for (; currentCharIndex < strings[0].length(); currentCharIndex++) {
+            for (int currentStrIndex = 1; currentStrIndex < strings.length; currentStrIndex++) {
+                //如果到达字符串末尾或者找到不相等的字符串，则返回匹配
+                if (currentCharIndex > strings[currentStrIndex].length()
+                    || strings[0].charAt(currentCharIndex) != strings[currentStrIndex].charAt(currentCharIndex)) {
+                    return strings[0].substring(0, currentCharIndex);
+                }
+            }
+        }
+
+        return strings[0].substring(0, currentCharIndex);
     }
 }
