@@ -1,12 +1,12 @@
 package me.gavincook.commons.io.csv;
 
-import com.google.common.base.Strings;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+
+import me.gavincook.commons.util.StringUtils;
 
 /**
  * CSV 读取工具类
@@ -39,7 +39,7 @@ public class CSVReader {
     public ReadableCSVLine nextCSVLine() throws IOException {
         String lineStr = this.reader.readLine();
         //空行或没有更多行
-        if (Strings.isNullOrEmpty(lineStr)) {
+        if (StringUtils.isNullOrEmpty(lineStr)) {
             return null;
         }
         return new ReadableCSVLine(lineStr);
