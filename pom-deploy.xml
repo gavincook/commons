@@ -75,4 +75,16 @@
         </dependency>
     </dependencies>
 
+
+    <distributionManagement>
+        <repository>
+            <id>aliyun</id>
+            <url>http://47.104.109.80:8081/repository/maven-releases/</url>
+        </repository>
+
+        <snapshotRepository>
+            <id>aliyun</id>
+            <url>http://47.104.109.80:8081/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>

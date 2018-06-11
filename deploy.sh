@@ -1,0 +1,1 @@
+mvn clean deploy -DrepositoryId=aliyun -f pom-deploy.xml -Dmaven.test.skip=true
