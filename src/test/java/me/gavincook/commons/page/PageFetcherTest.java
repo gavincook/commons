@@ -37,7 +37,7 @@ public class PageFetcherTest {
 
         PageCondition pageCondition = new PageCondition.Builder().build();
 
-        Paginator<String> paginator = PageFetcher.fetchPageData(pageCondition, () -> 10L, () -> {
+        PageFetcher.fetchPageData(pageCondition, () -> 10L, () -> {
             List<String> ret = new ArrayList<>();
             ret.add("1");
             return ret;

@@ -30,19 +30,20 @@ public class PageFetcher {
         }
 
         //预处理分页对象
+        PageCondition realPageCondition = pageCondition;
         if (pageCondition == null) {
-            pageCondition = new PageCondition.Builder().build();
+            realPageCondition = new PageCondition.Builder().build();
         }
         //查询count
         Long count = counter.get();
         if (count == null || count == 0) {
-            return Paginator.ofEmpty(pageCondition.getLimit());
+            return Paginator.ofEmpty(realPageCondition.getLimit());
         }
         //查询列表数据
         List<T> originData = listFetcher.get();
 
         //组装分页数据
-        return new Paginator<>(count, dataConverter.apply(originData), pageCondition);
+        return new Paginator<>(count, dataConverter.apply(originData), realPageCondition);
     }
 
 }
