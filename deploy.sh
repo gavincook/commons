@@ -1,1 +1,1 @@
-mvn clean deploy -DrepositoryId=aliyun -f pom-deploy.xml -Dmaven.test.skip=true
+mvn clean deploy -DrepositoryId=gavincook -f pom-deploy.xml -Dmaven.test.skip=true

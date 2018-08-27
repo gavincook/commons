@@ -76,13 +76,13 @@
 
     <distributionManagement>
         <repository>
-            <id>aliyun</id>
-            <url>http://47.104.109.80:8081/repository/maven-releases/</url>
+            <id>gavincook</id>
+            <url>http://nexus.gavincook.cn/repository/maven-releases/</url>
         </repository>
 
         <snapshotRepository>
-            <id>aliyun</id>
-            <url>http://47.104.109.80:8081/repository/maven-snapshots/</url>
+            <id>gavincook</id>
+            <url>http://nexus.gavincook.cn/repository/maven-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 </project>
