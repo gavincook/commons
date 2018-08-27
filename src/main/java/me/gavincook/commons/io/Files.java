@@ -6,6 +6,9 @@ import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.CharsetDecoder;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * 文件工具类
  * @author GavinCook
@@ -13,6 +16,11 @@ import java.nio.charset.CharsetDecoder;
  * @since 1.0.0
  */
 public class Files {
+
+    /**
+    * 日志
+    */
+    private static final Logger LOGGER = LoggerFactory.getLogger(Files.class);
 
     /**
      * 根据文件流判断文件内容编码，注意这里的编码主要根据前100个字节来决定。不一定和原有编码一致，如GBK可能解析为GB2312。
@@ -93,6 +101,36 @@ public class Files {
         } catch (CharacterCodingException e) {
             return false;
         }
-
     }
+
+    /**
+     * 从输入流捕获内容，默认使用UTF-8编码。
+     * @param in 输入流
+     * @return
+     */
+    public static String getContentFromInputStream(InputStream in) {
+        return getContentFromInputStream(in, Charset.UTF8.name());
+    }
+
+    /**
+     * 从输入流捕获内容，并可以指定内容编码。注意该操作不会关闭输入流。
+     * @param in 输入流
+     * @param charset 内容编码
+     * @return 获取到的字符串内容
+     */
+    public static String getContentFromInputStream(InputStream in, String charset) {
+        StringBuffer dist = new StringBuffer();
+        byte[] data = new byte[1024];
+        int readNum = -1;
+        try {
+            while ((readNum = in.read(data)) != -1) {
+                dist.append(new String(data, 0, readNum, charset));
+            }
+            in.close();
+        } catch (Exception e) {
+            throw new IllegalStateException("读取输入流内容异常", e);
+        }
+        return dist.toString();
+    }
+
 }
