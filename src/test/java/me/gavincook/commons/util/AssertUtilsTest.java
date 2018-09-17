@@ -2,7 +2,7 @@ package me.gavincook.commons.util;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import me.gavincook.commons.page.PageCondition;
 import org.testng.annotations.Test;
 
 
@@ -168,43 +168,43 @@ public class AssertUtilsTest {
 
     @Test
     public void testAssertByteArrayEquals() {
-        byte[] bytes1 = new byte[] { 1, 2, 3 };
-        byte[] bytes2 = new byte[] { 1, 2, 3 };
+        byte[] bytes1 = new byte[]{1, 2, 3};
+        byte[] bytes2 = new byte[]{1, 2, 3};
         AssertUtils.assertArrayEquals(bytes1, bytes2, "");
     }
 
     @Test
     public void testAssertShortArrayEquals() {
-        short[] shorts1 = new short[] { 1, 2, 3 };
-        short[] shorts2 = new short[] { 1, 2, 3 };
+        short[] shorts1 = new short[]{1, 2, 3};
+        short[] shorts2 = new short[]{1, 2, 3};
         AssertUtils.assertArrayEquals(shorts1, shorts2, "");
     }
 
     @Test
     public void testAssertIntArrayEquals() {
-        int[] ints1 = new int[] { 1, 2, 3, 999 };
-        int[] ints2 = new int[] { 1, 2, 3, 999 };
+        int[] ints1 = new int[]{1, 2, 3, 999};
+        int[] ints2 = new int[]{1, 2, 3, 999};
         AssertUtils.assertArrayEquals(ints1, ints2, "");
     }
 
     @Test
     public void testAssertFloatArrayEquals() {
-        float[] floats1 = new float[] { 1, 2.6F, 3, 999 };
-        float[] floats2 = new float[] { 1, 2.6F, 3, 999 };
+        float[] floats1 = new float[]{1, 2.6F, 3, 999};
+        float[] floats2 = new float[]{1, 2.6F, 3, 999};
         AssertUtils.assertArrayEquals(floats1, floats2, "");
     }
 
     @Test
     public void testAssertDoubleArrayEquals() {
-        double[] doubles1 = new double[] { 1, 2, 3.3D, 999 };
-        double[] doubles2 = new double[] { 1, 2, 3.3D, 999 };
+        double[] doubles1 = new double[]{1, 2, 3.3D, 999};
+        double[] doubles2 = new double[]{1, 2, 3.3D, 999};
         AssertUtils.assertArrayEquals(doubles1, doubles2, "");
     }
 
     @Test
     public void testAssertLongArrayEquals() {
-        long[] longs1 = new long[] { 1, 2, 3, 999 };
-        long[] longs2 = new long[] { 1, 2, 3, 999 };
+        long[] longs1 = new long[]{1, 2, 3, 999};
+        long[] longs2 = new long[]{1, 2, 3, 999};
         AssertUtils.assertArrayEquals(longs1, longs2, "");
     }
 
@@ -216,5 +216,11 @@ public class AssertUtilsTest {
     @Test
     public void testAssertFalse() {
         AssertUtils.assertFalse(false, "");
+    }
+
+    @Test
+    public void testAssertPageConditionValid() {
+        PageCondition pageCondition = new PageCondition.Builder().build();
+        AssertUtils.assertPageConditionValid(pageCondition);
     }
 }
