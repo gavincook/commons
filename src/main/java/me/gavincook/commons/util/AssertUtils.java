@@ -1,6 +1,3 @@
-/**
- * BBD Service Inc All Rights Reserved @2017
- */
 package me.gavincook.commons.util;
 
 import java.util.Arrays;

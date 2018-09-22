@@ -1,7 +1,3 @@
-/**
- * BBD Service Inc
- * All Rights Reserved @2018
- */
 package me.gavincook.commons.util;
 
 /**
@@ -12,10 +8,14 @@ package me.gavincook.commons.util;
  */
 public class Pair<A, B> {
 
-    /** 第一个对象 */
+    /**
+     * 第一个对象
+     */
     private A first;
 
-    /** 第二个对象 */
+    /**
+     * 第二个对象
+     */
     private B second;
 
     public Pair() {
@@ -44,15 +44,18 @@ public class Pair<A, B> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (o == null || getClass() != o.getClass())
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
+        }
 
         Pair<?, ?> pair = (Pair<?, ?>) o;
 
-        if (first != null ? !first.equals(pair.first) : pair.first != null)
+        if (first != null ? !first.equals(pair.first) : pair.first != null) {
             return false;
+        }
         return second != null ? second.equals(pair.second) : pair.second == null;
     }
 
