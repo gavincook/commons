@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import me.gavincook.commons.util.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -20,8 +20,6 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import me.gavincook.commons.util.StringUtils;
-
 /**
  * excel 导入导出工具类
  * 目前支持一个sheet页 2017年6月12日
@@ -31,19 +29,101 @@ import me.gavincook.commons.util.StringUtils;
  */
 public class ExcelUtil {
 
+    private static String CELL_PREFIX = "CELL";
+    private static String KEY_PREFIX = "KEY";
+    private static String NULL_VALUE = "NULL";
+
     /**
-     * 导入: 从excel到List<Map<String,Object>>
+     * 导入: 从excel到SheetData. tbody data保存到 SheetData.dataList (List<List<String>>)
      * @param filePath 文件路径
-     * @param keys 字段名称数组，与列对应
      * @return list List<Map<String,Object>>
      * @throws Exception 异常
      */
-    public static List<Map<String, Object>> importTo(String filePath, String[] keys) throws Exception {
-        //校验入参是否正确
-        validateParams(filePath, keys);
+    public static SheetData convertSheetDataAsList(String filePath) throws Exception{
+        validateParams(filePath);
+        List<HeaderKey> headerKeys = new ArrayList<>();
+        List<List<String>> dataList = new ArrayList<>();
+        List<String> data;
 
-        ArrayList<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        Map<String, Object> map;
+        // 读取文件
+        FileInputStream fis = null;
+        Workbook workbook = null;
+        try {
+            fis = new FileInputStream(filePath);
+            if (filePath.endsWith(".xls")) {
+                workbook = new HSSFWorkbook(fis);
+            } else if (filePath.endsWith(".xlsx")) {
+                workbook = new XSSFWorkbook(fis);
+            }
+            if (null == workbook) {
+                throw new Exception("get excel failed.");
+            }
+            //获取第一个sheet页
+            Sheet sheet = workbook.getSheetAt(0);
+
+            //获得数据的总列数. 会剔除空格，计算所有不为空的数。
+            //int totalCellNum = sheet.getRow(0).getPhysicalNumberOfCells()
+            //获取数据总列数，拿到最后一列的Num，故不会剔除空格。
+            int totalCellNum = sheet.getRow(0).getLastCellNum();
+            //获得数据的总行数
+            int totalRowNum = sheet.getLastRowNum();
+
+            Cell cell;
+            Object value;
+            // 获取表头, 遍历第一行
+            for (short i = 0; i < totalCellNum; i++) {
+                cell = sheet.getRow(0).getCell(i);
+                if (null == cell) {
+                    // 为空时，设置随机值
+                    headerKeys.add(new HeaderKey (KEY_PREFIX + i, CELL_PREFIX + i));
+                    continue;
+                }
+                value = getCellValue(cell);
+                headerKeys.add(new HeaderKey (KEY_PREFIX + i, String.valueOf(value)));
+            }
+
+            // 获取数据, 从第二行开始遍历，行列
+            for (int i =1; i<totalRowNum+1; i++) {
+                data = new ArrayList<>();
+                for (short j = 0; j < totalCellNum; j++) {
+                    cell = sheet.getRow(i).getCell(j);
+                    if (null == cell) {
+                        // 为空时，设置随机值
+                        data.add(NULL_VALUE);
+                        continue;
+                    }
+                    value = getCellValue(cell);
+                    data.add(String.valueOf(value));
+                }
+                dataList.add(data);
+            }
+
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Exception("analysis excel exception", e);
+        } finally {
+            if (null != fis) {
+                fis.close();
+            }
+        }
+        return new SheetData(headerKeys,null, dataList);
+    }
+
+    /**
+     * 导入: 从excel到SheetData, tbody data保存到 SheetData.dataMap (List<Map<String,String>>)
+     * @param filePath 文件路径
+     * @return list List<Map<String,Object>>
+     * @throws Exception 异常
+     */
+    public static SheetData convertSheetDataAsMap(String filePath) throws Exception {
+        //校验入参是否正确
+        validateParams(filePath);
+
+        List<HeaderKey> headerKeys = new ArrayList<>();
+        ArrayList<Map<String, String>> dataList = new ArrayList<>();
+        Map<String, String> data;
 
         // 读取文件
         FileInputStream fis = null;
@@ -61,26 +141,40 @@ public class ExcelUtil {
             }
             //获取第一个sheet页
             Sheet sheet = workbook.getSheetAt(0);
-            //通过表头行获取表头列数
-            int cellNum = sheet.getRow(0).getPhysicalNumberOfCells();
-            if (keys.length != cellNum) {
-                throw new Exception("incorrect keys.length or cellNum.");
-            }
+            //int totalCellNum = sheet.getRow(0).getPhysicalNumberOfCells()
+            //获取数据总列数，拿到最后一列的Num，故，不会剔除空格。
+            int cellNum = sheet.getRow(0).getLastCellNum();
+
             //获得数据的总行数
             int totalRowNum = sheet.getLastRowNum();
             Cell cell;
             Object value;
-            //遍历行，列
-            for (int i = 0; i < totalRowNum; i++) {
-                map = new HashMap<String, Object>();
+            // 获取表头,遍历第一行
+            for (short i = 0; i < cellNum; i++) {
+                cell = sheet.getRow(0).getCell(i);
+                if (null == cell) {
+                    // 为空时，设置随机值
+                    headerKeys.add(new HeaderKey(KEY_PREFIX + i, CELL_PREFIX + i));
+                    continue;
+                }
+                value = getCellValue(cell);
+                headerKeys.add(new HeaderKey(KEY_PREFIX + i, String.valueOf(value)));
+            }
+
+            // 获取数据，遍历行，列. 从第二行开始，一行一行的读
+            for (int i = 1; i < totalRowNum + 1; i++) {
+                data = new HashMap<>(16);
                 for (short j = 0; j < cellNum; j++) {
                     cell = sheet.getRow(i).getCell(j);
-                    if (null == cell)
-                        continue; // 为空时，下一列
+                    if (null == cell) {
+                        // 为空时，设置为空
+                        data.put(KEY_PREFIX + j, NULL_VALUE);
+                        continue;
+                    }
                     value = getCellValue(cell);
-                    map.put(keys[j], value);
+                    data.put(KEY_PREFIX + j, String.valueOf(value));
                 }
-                list.add(map);
+                dataList.add(data);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -90,7 +184,7 @@ public class ExcelUtil {
                 fis.close();
             }
         }
-        return list;
+        return new SheetData(headerKeys, dataList);
     }
 
     /**
@@ -105,7 +199,7 @@ public class ExcelUtil {
      * @return file 文件
      */
     public static <T> File export(String fileNamePath, String sheetName, List<T> list, String[] titles,
-                                  String[] fieldNames) throws Exception {
+        String[] fieldNames) throws Exception {
         //生成一个新的sheet,并以表名命名
         sheetName = StringUtils.isNullOrEmpty(sheetName) ? "sheet1" : sheetName;
 
@@ -127,7 +221,7 @@ public class ExcelUtil {
         for (int i = 0; i < list.size(); i++) {
             t = list.get(i);
             row = sheet.createRow(i + 1);
-            Class<? extends Object> clazz = t.getClass();
+            Class<?> clazz = t.getClass();
             for (int j = 0; j < fieldNames.length; j++) {
                 //通过类和字段名 获取对应的method
                 method = getMethod(clazz, fieldNames[j]);
@@ -203,7 +297,7 @@ public class ExcelUtil {
         String methodName = "get" + capitalize(fieldName);
         try {
             method = clazz.getDeclaredMethod(methodName);
-        } catch (java.lang.NoSuchMethodException e) { //不存在该方法，查看父类是否存在。此处只支持一级父类
+        } catch (NoSuchMethodException e) { //不存在该方法，查看父类是否存在。此处只支持一级父类
             if (null != clazz.getSuperclass()) {
                 method = clazz.getSuperclass().getDeclaredMethod(methodName);
             }
@@ -217,13 +311,9 @@ public class ExcelUtil {
     /**
      * 校验导入方法参数是否正确
      * @param filePath 文件路径
-     * @param keys 字段名称
      * @throws Exception 异常
      */
-    private static void validateParams(String filePath, String[] keys) throws Exception {
-        if (null == keys || 0 == keys.length) {
-            throw new Exception("keys can not be null.");
-        }
+    private static void validateParams(String filePath) throws Exception {
         if (!(filePath.endsWith(".xls") || filePath.endsWith(".xlsx"))) {
             throw new Exception("incorrect file format.");
         }
@@ -250,14 +340,4 @@ public class ExcelUtil {
         str.getChars(1, strLen, newChars, 1);
         return String.valueOf(newChars);
     }
-
-    public static void main(String[] args) {
-
-        String str = "abcde";
-
-        String str2 = capitalize(str);
-        System.out.println(str2);
-
-    }
-
 }
