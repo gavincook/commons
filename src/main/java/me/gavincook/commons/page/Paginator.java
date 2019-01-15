@@ -14,32 +14,38 @@ public class Paginator<T> implements Serializable {
 
     private static final long serialVersionUID = 1927750008084483758L;
 
-    /** 总记录数 */
-    private long              totalItemsCount;
+    /**
+     * 总记录数
+     */
+    private long totalItemsCount;
 
-    /** 分页大小 */
-    private int               pageSize;
+    /**
+     * 分页大小
+     */
+    private int pageSize;
 
-    /** 当前页码，从1开始 */
-    private int               currentPageNum;
+    /**
+     * 当前页码，从1开始
+     */
+    private int currentPageNum;
 
-    /** 当前分页数据 */
-    private List<T>           items            = new ArrayList<T>();
+    /**
+     * 当前分页数据
+     */
+    private List<T> items = new ArrayList<T>();
 
     /**
      * 构造空数据的分页对象，常用于在已知没有数据的情况下使用。
+     *
      * @param pageSize 分页大小
-     * @param <T>
-     * @return
      */
     public static <T> Paginator<T> ofEmpty(int pageSize) {
-        return new Paginator(0, null, 1, pageSize);
+        return new Paginator(0, new ArrayList<T>(), 1, pageSize);
     }
 
     /**
-     * 从原始的分页对象构建分页结构，其中分页信息使用现有分页对象的信息，数据使用参数{@code items}指定的数据。
-     * 通常用于在分页数据结构需要转换时使用。
-     * 
+     * 从原始的分页对象构建分页结构，其中分页信息使用现有分页对象的信息，数据使用参数{@code items}指定的数据。 通常用于在分页数据结构需要转换时使用。
+     *
      * @param old 原始的分页对象
      * @param items 新的数据集合
      */
@@ -49,10 +55,6 @@ public class Paginator<T> implements Serializable {
 
     /**
      * 通过分页条件来构造分页对象。
-     * 
-     * @param totalItemsCount
-     * @param items
-     * @param pageCondition
      */
     public Paginator(long totalItemsCount, List<T> items, PageCondition pageCondition) {
         this.totalItemsCount = totalItemsCount;
@@ -63,11 +65,6 @@ public class Paginator<T> implements Serializable {
 
     /**
      * 通过页码和页面尺寸来构建分页对象
-     *
-     * @param totalItemsCount
-     * @param items
-     * @param currentPageNum
-     * @param pageSize
      */
     public Paginator(long totalItemsCount, List<T> items, int currentPageNum, int pageSize) {
         this.totalItemsCount = totalItemsCount;
@@ -78,7 +75,6 @@ public class Paginator<T> implements Serializable {
 
     /**
      * 获取数据
-     * @return
      */
     public List<T> getItems() {
         return items;
@@ -86,7 +82,6 @@ public class Paginator<T> implements Serializable {
 
     /**
      * 获取总页数
-     * @return
      */
     public long getTotalPageCount() {
         return ((totalItemsCount / pageSize) + (totalItemsCount % pageSize == 0 ? 0 : 1));
@@ -94,7 +89,6 @@ public class Paginator<T> implements Serializable {
 
     /**
      * 获取总条数
-     * @return
      */
     public long getTotalItemsCount() {
         return totalItemsCount;
@@ -102,7 +96,6 @@ public class Paginator<T> implements Serializable {
 
     /**
      * 获取当前页码
-     * @return
      */
     public int getCurrentPageNum() {
         if (currentPageNum <= 1) {
@@ -113,7 +106,6 @@ public class Paginator<T> implements Serializable {
 
     /**
      * 获取页面条数大小
-     * @return
      */
     public int getPageSize() {
         if (pageSize <= 0) {
@@ -124,7 +116,6 @@ public class Paginator<T> implements Serializable {
 
     /**
      * 获取下一页页码
-     * @return
      */
     public int getNextPageNum() {
         if (this.currentPageNum < getTotalPageCount()) {
@@ -137,7 +128,6 @@ public class Paginator<T> implements Serializable {
 
     /**
      * 获取前一页页码
-     * @return
      */
     public int getPreviousPageNum() {
         if (currentPageNum <= 1) {
