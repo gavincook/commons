@@ -213,24 +213,4 @@ public class AESUtils {
         return original;
     }
 
-    /**
-     * test
-     * @param args
-     */
-    public static void main(String[] args) throws Exception {
-        String data = "走遍世界的心不能停...O(∩_∩)O哈哈~", key, secret, origin;
-        key = AESUtils.generateAESKey(128);
-        System.out.println("key length 128: " + key);
-        System.out.println("============== 默认AES加解密前后使用Base64加解码 ==============");
-        secret = AESUtils.encrypt(data, key);
-        System.out.println(String.format("encrypt data: %s, result: %s", data, secret));
-        origin = AESUtils.decrypt(secret, key);
-        System.out.println("decrypt result: " + origin);
-        System.out.println("============== 指定AES加解密前后使用Hex加解码 ==============");
-        secret = AESUtils.encryptThenHex(data, key, "UTF-8");
-        System.out.println(String.format("encrypt data: %s, result: %s", data, secret));
-        origin = AESUtils.decryptAfterHexDecode(secret, key, "UTF-8");
-        System.out.println("decrypt result: " + origin);
-
-    }
 }

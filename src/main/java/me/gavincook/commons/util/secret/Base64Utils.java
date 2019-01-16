@@ -133,32 +133,4 @@ public class Base64Utils {
         return dst;
     }
 
-    /**
-     * test, Use this base64 utils to compare with sun.misc.BASE64Encoder
-     * @param args
-     */
-    public static void main(String[] args) throws IOException {
-        String data = "走遍世界的心不能停...O(∩_∩)O哈哈~";
-        String result_this = null, result_sun = null;
-        System.out.println("============== Base64 加码[默认字符编码] ==============");
-        result_this = Base64Utils.base64Encodes(data.getBytes());
-//        result_sun = new BASE64Encoder().encode(data.getBytes());
-        System.out.println(String.format("this: [%s] equals sun : [%s]  is [%s]", result_this, result_sun, result_this.equals(result_sun)));
-
-        System.out.println("============== Base64 解码[默认字符编码] ==============");
-        result_this = Base64Utils.base64Decodes(result_this.getBytes());
-//        result_sun = new String(new BASE64Decoder().decodeBuffer(result_sun));
-        System.out.println(String.format("this: [%s] equals sun : [%s]  is [%s]", result_this, result_sun, result_this.equals(result_sun)));
-
-        System.out.println("============== Base64 加码[指定字符编码] ==============");
-        result_this = Base64Utils.base64Encodes(data, "UTF-8");
-//        result_sun = new BASE64Encoder().encode(data.getBytes("UTF-8"));
-        System.out.println(String.format("this: [%s] equals sun : [%s]  is [%s]", result_this, result_sun, result_this.equals(result_sun)));
-
-        System.out.println("============== Base64 解码[指定字符编码] ==============");
-        result_this = Base64Utils.base64Decodes(result_this.getBytes(), "UTF-8");
-//        result_sun = new String(new BASE64Decoder().decodeBuffer(result_sun), "UTF-8");
-        System.out.println(String.format("this: [%s] equals sun : [%s]  is [%s]", result_this, result_sun, result_this.equals(result_sun)));
-
-    }
 }

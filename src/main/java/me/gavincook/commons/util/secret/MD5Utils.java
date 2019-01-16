@@ -1,7 +1,9 @@
 package me.gavincook.commons.util.secret;
 
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
 import java.util.UUID;
 
 /**
@@ -13,15 +15,27 @@ public class MD5Utils {
 
     private static final String MD5 = "MD5";
 
+    private static final String DEFAULT_CHART_SET = "UTF-8";
+
     /**
      * 对文本进行32位小写MD5加密
      *
      * @param text
      * @return 加密后的内容
      */
-    public static String calculateMD5Val(String text) throws NoSuchAlgorithmException {
+    public static String sign(String text) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+        return sign(text, DEFAULT_CHART_SET);
+    }
+
+    /**
+     * 对文本进行32位小写MD5加密
+     *
+     * @param text
+     * @return 加密后的内容
+     */
+    public static String sign(String text, String charset) throws NoSuchAlgorithmException, UnsupportedEncodingException {
         MessageDigest md5Encoder = MessageDigest.getInstance(MD5);
-        byte[] textBytes = text.getBytes();
+        byte[] textBytes = getContentBytes(text, charset);
         md5Encoder.update(textBytes);
         byte[] encodedBytes = md5Encoder.digest();
         StringBuilder resultBuffer = new StringBuilder();
@@ -36,15 +50,21 @@ public class MD5Utils {
     }
 
     /**
-     * Test
-     * @param args
+     * @param content
+     * @param charset
+     * @return
+     * @throws SignatureException
+     * @throws UnsupportedEncodingException
      */
-    public static void main(String[] args) throws NoSuchAlgorithmException {
-        String md5PrivateKey = UUID.randomUUID().toString();
-        String data = "走遍世界的心不能停...O(∩_∩)O哈哈~";
-        String sign = MD5Utils.calculateMD5Val(data + md5PrivateKey);
-        System.out.println(String.format("Data: %s, calculate MD5 to: %s", data + md5PrivateKey, sign));
-        String wrongSign = MD5Utils.calculateMD5Val(data + UUID.randomUUID().toString());
-        assert sign.equals(wrongSign) : "the sign is not correct";
+    private static byte[] getContentBytes(String content, String charset) throws UnsupportedEncodingException{
+        if (charset == null || "".equals(charset)) {
+            return content.getBytes();
+        }
+        try {
+            return content.getBytes(charset);
+        } catch (UnsupportedEncodingException e) {
+            throw new UnsupportedEncodingException("sign occurred a exception with " + charset);
+        }
     }
+
 }

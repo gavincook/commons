@@ -163,26 +163,4 @@ public class RSAUtils {
         return generateKey;
     }
 
-    public static void main(String[] args) throws Exception {
-        KeyPair keyPair = generateKeyPair();
-        String publicKey = RSAUtils.getPublicKey(keyPair);
-        String privateKey = RSAUtils.getPrivateKey(keyPair);
-        System.out.println("Public key: " + publicKey);
-        System.out.println("Private key: " + privateKey);
-        String data = "走遍世界的心不能停...O(∩_∩)O哈哈~", secret, origin;
-        System.out.println("============== 公钥加密, 私钥解密 ==============");
-        System.out.println("Origin data before encrypt is: " + data);
-        secret = RSAUtils.encryptData(publicKey, data, "UTF-8");
-        System.out.println("secret data after encrypt is: " + secret);
-        origin = RSAUtils.decryptData(privateKey, secret, "UTF-8");
-        System.out.println("origin data after encrypt is: " + origin);
-
-        System.out.println("============== 私钥加密, 公钥解密 ==============");
-        System.out.println("Origin data before encrypt is: " + data);
-        secret = RSAUtils.encryptData(privateKey, data, "UTF-8", false);
-        System.out.println("secret data after encrypt is: " + secret);
-        origin = RSAUtils.decryptData(publicKey, secret, "UTF-8", true);
-        System.out.println("origin data after encrypt is: " + origin);
-
-    }
 }
