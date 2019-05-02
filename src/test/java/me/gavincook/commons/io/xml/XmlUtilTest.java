@@ -31,6 +31,7 @@ public class XmlUtilTest extends BaseTest {
         transHeader.setSysMsgLen("10000");
         transReq.setHeader(transHeader);
         TransBody transBody = new TransBody();
+//        transBody.setResponse("");
         transReq.setBody(transBody);
 
         return transReq;
@@ -43,7 +44,7 @@ public class XmlUtilTest extends BaseTest {
         @XmlElement(name = "Transaction_Header")
         private TransHeader header;
 
-        @XmlElement(name = "Transaction_Body")
+        @XmlElement(name = "Transaction_Body", nillable = true)
         private TransBody body;
 
         public TransHeader getHeader() {

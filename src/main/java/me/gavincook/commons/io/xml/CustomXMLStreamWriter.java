@@ -26,7 +26,7 @@ public final class CustomXMLStreamWriter extends DelegatingXMLStreamWriter {
      */
     @Override
     public void writeCharacters(String text) throws XMLStreamException {
-        if (cData) {
+        if (!"".equals(text) && cData) {
             super.writeCData(text);
         } else {
             super.writeCharacters(text);
